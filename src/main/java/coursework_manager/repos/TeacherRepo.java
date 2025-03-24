@@ -93,27 +93,4 @@ public class TeacherRepo {
         }
     }
 
-    // Метод для поиска преподавателя по ID
-//    public static Teacher getTeacherById(int id) {
-//        String query = "SELECT * FROM teacher WHERE id = ?";
-//        Teacher teacher = null;
-//
-//        try (Connection connection = DbManager.getConnection();
-//             PreparedStatement statement = connection.prepareStatement(query)) {
-//
-//            statement.setInt(1, id);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            if (resultSet.next()) {
-//                String name = resultSet.getString("name");
-//                String name = resultSet.getString("jobTitle");
-//                teacher = new Teacher(id, name);
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return teacher;
-//    }
 }

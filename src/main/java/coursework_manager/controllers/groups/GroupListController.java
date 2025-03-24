@@ -1,5 +1,6 @@
 package coursework_manager.controllers.groups;
 
+import coursework_manager.controllers.teachers.TeacherListController;
 import coursework_manager.models.Group;
 import coursework_manager.repos.GroupRepo;
 import javafx.fxml.FXML;
@@ -57,7 +58,7 @@ public class GroupListController {
     private void handleGoToTeachers() {
         try {
             // Загрузка FXML-файла для списка учителей
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("list_teachers.fxml"));
+            FXMLLoader loader = new FXMLLoader(TeacherListController.class.getResource("list_teachers.fxml"));
             Parent root = loader.load();
 
             // Получение текущего Stage
@@ -66,7 +67,7 @@ public class GroupListController {
             // Установка новой сцены
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Управление учителями");
+            stage.setTitle("Управление преподавателями");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,4 +1,4 @@
-module coursework_manager{
+module coursework_manager {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -10,8 +10,8 @@ module coursework_manager{
     exports coursework_manager.models;
     exports coursework_manager.repos;
     opens coursework_manager.controllers to javafx.fxml;
-    exports coursework_manager.controllers.records;
-    opens coursework_manager.controllers.records to javafx.fxml;
+    opens coursework_manager.controllers.teachers to javafx.fxml;
     exports coursework_manager.controllers.groups;
     opens coursework_manager.controllers.groups to javafx.fxml;
+    exports coursework_manager.controllers.teachers;
 }

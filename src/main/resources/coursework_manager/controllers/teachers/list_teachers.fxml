@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework_manager.controllers.groups.TeacherListController">
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework_manager.controllers.teachers.TeacherListController">
     <TableView fx:id="teacherTable">
         <columns>
             <TableColumn text="Имя" prefWidth="300">
@@ -25,11 +25,13 @@
         </columns>
     </TableView>
 
-    <HBox>
+    <HBox spacing="5" alignment="CENTER_LEFT">
+        <VBox.margin>
+            <Insets top="15" right="5" bottom="15" left="5"/>
+        </VBox.margin>
         <Button text="Добавить" onAction="#handleAddTeacher" />
-        <Button text="Обновить" onAction="#handleUpdateTeacher" />
+        <Button text="Редактировать" onAction="#handleUpdateTeacher" />
         <Button text="Удалить" onAction="#handleDeleteTeacher" />
         <Button text="Назад" onAction="#handleBack" />
-
     </HBox>
 </VBox>

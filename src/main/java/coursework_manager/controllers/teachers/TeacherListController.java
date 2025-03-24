@@ -1,5 +1,6 @@
-package coursework_manager.controllers.groups;
+package coursework_manager.controllers.teachers;
 
+import coursework_manager.controllers.groups.GroupListController;
 import coursework_manager.models.Teacher;
 import coursework_manager.repos.TeacherRepo;
 import javafx.collections.FXCollections;
@@ -15,7 +16,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -40,8 +40,8 @@ public class TeacherListController {
     private void handleAddTeacher() {
         // Создаем диалоговое окно
         Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Добавить нового учителя");
-        dialog.setHeaderText("Введите данные учителя");
+        dialog.setTitle("Добавить нового преподавателя");
+        dialog.setHeaderText("Введите данные преподавателя");
 
         // Устанавливаем кнопки (OK и Cancel)
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -82,10 +82,10 @@ public class TeacherListController {
                 if (TeacherRepo.addTeacher(newTeacher)) {
                     teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
                 } else {
-                    showAlert("Ошибка", "Не удалось добавить учителя.");
+                    showAlert("Ошибка", "Не удалось добавить преподавателя.");
                 }
             } else {
-                showAlert("Ошибка", "Имя учителя не может быть пустым.");
+                showAlert("Ошибка", "Имя не может быть пустым.");
             }
         });
     }
@@ -94,14 +94,14 @@ public class TeacherListController {
     private void handleUpdateTeacher() {
         Teacher selectedTeacher = teacherTable.getSelectionModel().getSelectedItem();
         if (selectedTeacher == null) {
-            showAlert("Ошибка", "Выберите учителя для редактирования.");
+            showAlert("Ошибка", "Выберите преподавателя для редактирования.");
             return;
         }
 
         // Создаем диалоговое окно
         Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Редактировать учителя");
-        dialog.setHeaderText("Измените данные учителя");
+        dialog.setTitle("Редактировать преподавателя");
+        dialog.setHeaderText("Измените данные преподавателя");
 
         // Устанавливаем кнопки
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -141,10 +141,10 @@ public class TeacherListController {
                 if (TeacherRepo.updateTeacher(selectedTeacher)) {
                     teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
                 } else {
-                    showAlert("Ошибка", "Не удалось обновить данные учителя.");
+                    showAlert("Ошибка", "Не удалось обновить данные преподавателя.");
                 }
             } else {
-                showAlert("Ошибка", "Имя учителя не может быть пустым.");
+                showAlert("Ошибка", "Имя преподавателя не может быть пустым.");
             }
         });
     }
@@ -153,27 +153,27 @@ public class TeacherListController {
     private void handleDeleteTeacher() {
         Teacher selectedTeacher = teacherTable.getSelectionModel().getSelectedItem();
         if (selectedTeacher == null) {
-            showAlert("Ошибка", "Выберите учителя для удаления.");
+            showAlert("Ошибка", "Выберите преподавателя для удаления.");
             return;
         }
 
         Alert confirmation = new Alert(AlertType.CONFIRMATION);
         confirmation.setTitle("Подтверждение удаления");
-        confirmation.setHeaderText("Вы уверены, что хотите удалить этого учителя?");
+        confirmation.setHeaderText("Вы уверены, что хотите удалить этого преподавателя?");
         confirmation.setContentText(selectedTeacher.getName());
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
             if (TeacherRepo.deleteTeacher(selectedTeacher.getId())) {
                 teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
             } else {
-                showAlert("Ошибка", "Не удалось удалить учителя.");
+                showAlert("Ошибка", "Не удалось удалить преподавателя.");
             }
         }
     }
 
     @FXML
     private void handleBack() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("group_list.fxml"));
+        FXMLLoader loader = new FXMLLoader(GroupListController.class.getResource("group_list.fxml"));
         Parent root = loader.load();
 
         // Получение текущего Stage

@@ -9,12 +9,11 @@ public class DbManager {
     private static final String userName = "rat";
     private static final String password = "rat";
 
-    private static final String url = "jdbc:postgresql://localhost:5434/vacancies";  // Replace with your database URL
+    private static final String url = "jdbc:postgresql://localhost:5434/vacancies";
 
 
     public static Connection getConnection() throws SQLException {
         try {
-            // TODO
             Class.forName("org.postgresql.Driver");
             return DriverManager.getConnection(url, userName, password);
         } catch (ClassNotFoundException e) {

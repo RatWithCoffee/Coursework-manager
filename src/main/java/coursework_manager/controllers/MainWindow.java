@@ -13,7 +13,7 @@ public class MainWindow {
     public static void showMainWindow(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(GroupListController.class.getResource("group_list.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 400, 200);
+            Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle("Менеджер курсовых работ");
             stage.setScene(scene);
             stage.show();
