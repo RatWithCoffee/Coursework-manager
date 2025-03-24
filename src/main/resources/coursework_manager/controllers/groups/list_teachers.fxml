@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework_manager.controllers.groups.TeacherListController">
+    <TableView fx:id="teacherTable">
+        <columns>
+            <TableColumn text="Имя" prefWidth="300">
+                <cellValueFactory>
+                    <PropertyValueFactory property="name" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Должность" prefWidth="300">
+                <cellValueFactory>
+                    <PropertyValueFactory property="jobTitle" />
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+    <HBox>
+        <Button text="Добавить" onAction="#handleAddTeacher" />
+        <Button text="Обновить" onAction="#handleUpdateTeacher" />
+        <Button text="Удалить" onAction="#handleDeleteTeacher" />
+        <Button text="Назад" onAction="#handleBack" />
+
+    </HBox>
+</VBox>

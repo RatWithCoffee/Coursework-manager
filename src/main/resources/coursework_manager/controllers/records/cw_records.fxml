@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml/1" style="-fx-padding: 20 20 20 20;" fx:controller="coursework_manager.controllers.records.CourseworkRecordController" vgap="10" hgap="10">
+    <!-- Настройка колонок GridPane -->
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints hgrow="ALWAYS" />
+    </columnConstraints>
+
+    <!-- Настройка строк GridPane -->
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints vgrow="NEVER" />
+    </rowConstraints>
+
+    <!-- Таблица для отображения coursework_record -->
+    <TableView fx:id="courseworkRecordTable" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <columns>
+            <!-- Колонка для Coursework Title -->
+            <TableColumn fx:id="courseworkTitle" text="Название курсовой работы">
+                <cellValueFactory>
+                    <PropertyValueFactory property="courseworkTitle" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Колонка для Teacher Name -->
+            <TableColumn fx:id="teacherName" text="Преподаватель">
+                <cellValueFactory>
+                    <PropertyValueFactory property="teacherName" />
+                </cellValueFactory>
+            </TableColumn>
+
+        </columns>
+    </TableView>
+
+    <!-- Кнопки для управления -->
+    <Button text="Добавить запись" fx:id="addRecordButton" GridPane.rowIndex="1" GridPane.columnIndex="0" onAction="#showAddWindow"/>
+    <Button text="Удалить запись" fx:id="deleteRecordButton" GridPane.rowIndex="1" GridPane.columnIndex="1" onAction="#handleDeleteRecord"/>
+</GridPane>
