@@ -103,6 +103,23 @@ public class GroupDetailsController {
         });
     }
 
+//    private void openCourseworkDetailsWindow(CourseworkRecord record) {
+//        try {
+//            var loader = new FXMLLoader(getClass().getResource("coursework_details.fxml"));
+//            Parent root = loader.load();
+//
+//            CourseworkDetailsController controller = loader.getController();
+//            controller.setCourseworkRecord(record);
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("Курсовая работа: " + record.getCoursework().getName());
+//            stage.setScene(new Scene(root, 700, 600));
+//            stage.show();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     private void openCourseworkDetailsWindow(CourseworkRecord record) {
         try {
             var loader = new FXMLLoader(getClass().getResource("coursework_details.fxml"));
@@ -115,8 +132,13 @@ public class GroupDetailsController {
             stage.setTitle("Курсовая работа: " + record.getCoursework().getName());
             stage.setScene(new Scene(root, 700, 600));
             stage.show();
+
+            // Добавляем кнопку для просмотра графиков в окно деталей курсовой
+//            controller.addChartsButton(() -> ChartsWindowController.show(record));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }

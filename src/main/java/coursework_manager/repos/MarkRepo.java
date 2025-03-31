@@ -23,7 +23,8 @@ public class MarkRepo {
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                int markVal = resultSet.getInt("mark");
+                Integer markVal = resultSet.getObject("mark", Integer.class); // Получаем объект Integer, который может быть null
+
                 String stName = resultSet.getString("name");
 
                 Mark mark = new Mark(id, stName, markVal);

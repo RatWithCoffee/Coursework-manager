@@ -8,19 +8,22 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework_manager.controllers.groups.CourseworkDetailsController">
     <center>
-        <TableView fx:id="marksTable" editable="true">
-            <columns>
-                <TableColumn text="Студент" prefWidth="200">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="studentName" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn text="Оценка" prefWidth="100" fx:id="markColumn">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="mark" />
-                    </cellValueFactory>
-                </TableColumn>
-            </columns>
-        </TableView>
+        <VBox spacing="10">
+            <TableView fx:id="marksTable" editable="true">
+                <columns>
+                    <TableColumn text="Студент" prefWidth="200">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="studentName" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Оценка" prefWidth="100" fx:id="markColumn">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="mark" />
+                        </cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+            <Button text="Показать графики оценок" onAction="#showCharts"/>
+        </VBox>
     </center>
 </BorderPane>

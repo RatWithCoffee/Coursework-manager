@@ -85,6 +85,12 @@ public class CourseworkDetailsController {
         });
     }
 
+
+    @FXML
+    private void showCharts() {
+        ChartsWindowController.show(this.courseworkRecord);
+    }
+
     private void updateMarkInDatabase(Mark mark) {
         MarkRepo.updateMark(mark);
     }

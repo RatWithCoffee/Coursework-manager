@@ -3,6 +3,7 @@ package coursework_manager.controllers.teachers;
 import coursework_manager.controllers.groups.GroupListController;
 import coursework_manager.models.Teacher;
 import coursework_manager.repos.TeacherRepo;
+import coursework_manager.utils.AlertUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,10 +18,16 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TeacherListController {
 
@@ -82,10 +89,10 @@ public class TeacherListController {
                 if (TeacherRepo.addTeacher(newTeacher)) {
                     teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
                 } else {
-                    showAlert("Ошибка", "Не удалось добавить преподавателя.");
+                    AlertUtils.showAlert("Ошибка", "Не удалось добавить преподавателя.");
                 }
             } else {
-                showAlert("Ошибка", "Имя не может быть пустым.");
+                AlertUtils.showAlert("Ошибка", "Имя не может быть пустым.");
             }
         });
     }
@@ -94,7 +101,7 @@ public class TeacherListController {
     private void handleUpdateTeacher() {
         Teacher selectedTeacher = teacherTable.getSelectionModel().getSelectedItem();
         if (selectedTeacher == null) {
-            showAlert("Ошибка", "Выберите преподавателя для редактирования.");
+            AlertUtils.showAlert("Ошибка", "Выберите преподавателя для редактирования.");
             return;
         }
 
@@ -141,10 +148,10 @@ public class TeacherListController {
                 if (TeacherRepo.updateTeacher(selectedTeacher)) {
                     teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
                 } else {
-                    showAlert("Ошибка", "Не удалось обновить данные преподавателя.");
+                    AlertUtils.showAlert("Ошибка", "Не удалось обновить данные преподавателя.");
                 }
             } else {
-                showAlert("Ошибка", "Имя преподавателя не может быть пустым.");
+                AlertUtils.showAlert("Ошибка", "Имя преподавателя не может быть пустым.");
             }
         });
     }
@@ -153,7 +160,7 @@ public class TeacherListController {
     private void handleDeleteTeacher() {
         Teacher selectedTeacher = teacherTable.getSelectionModel().getSelectedItem();
         if (selectedTeacher == null) {
-            showAlert("Ошибка", "Выберите преподавателя для удаления.");
+            AlertUtils.showAlert("Ошибка", "Выберите преподавателя для удаления.");
             return;
         }
 
@@ -166,7 +173,7 @@ public class TeacherListController {
             if (TeacherRepo.deleteTeacher(selectedTeacher.getId())) {
                 teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
             } else {
-                showAlert("Ошибка", "Не удалось удалить преподавателя.");
+                AlertUtils.showAlert("Ошибка", "Не удалось удалить преподавателя.");
             }
         }
     }
@@ -185,11 +192,58 @@ public class TeacherListController {
         stage.show();
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML
+    private void handleImportFromCSV() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Выберите CSV файл");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+        );
+        File selectedFile = fileChooser.showOpenDialog(teacherTable.getScene().getWindow());
+
+        if (selectedFile != null) {
+            try {
+                List<Teacher> importedTeachers = parseCSVFile(selectedFile);
+                int successCount = 0;
+
+                for (Teacher teacher : importedTeachers) {
+                    if (TeacherRepo.addTeacher(teacher)) {
+                        successCount++;
+                        teacherList.add(teacher);
+                    }
+                }
+
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Импорт завершен");
+                alert.setHeaderText(null);
+                alert.setContentText(String.format("Успешно импортировано %d из %d преподавателей",
+                        successCount, importedTeachers.size()));
+                alert.showAndWait();
+
+            } catch (IOException e) {
+                AlertUtils.showAlert("Ошибка при чтении файла", e.getMessage());
+            }
+        }
     }
+
+    private List<Teacher> parseCSVFile(File csvFile) throws IOException {
+        List<Teacher> teachers = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values.length >= 2) {
+                    String name = values[0].trim();
+                    String jobTitle = values[1].trim();
+                    teachers.add(new Teacher(name, jobTitle));
+                }
+            }
+        }
+
+        return teachers;
+    }
+
+
 }

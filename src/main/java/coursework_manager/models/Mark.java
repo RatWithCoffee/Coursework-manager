@@ -5,7 +5,7 @@ public class Mark {
     private String studentName;
     private Integer mark;
 
-    public Mark(int id, String studentName, int mark) {
+    public Mark(int id, String studentName, Integer mark) {
         this.id = id;
         this.studentName = studentName;
         this.mark = mark;

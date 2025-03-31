@@ -6,13 +6,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Teacher {
-    private final IntegerProperty id;
+    private  IntegerProperty id;
     private final StringProperty name;
     private final StringProperty jobTitle;
 
     // Конструктор
     public Teacher(int id, String name, String jobTitle) {
         this.id = new SimpleIntegerProperty(id);
+        this.name = new SimpleStringProperty(name);
+        this.jobTitle = new SimpleStringProperty(jobTitle);
+    }
+
+    public Teacher(String name, String jobTitle) {
         this.name = new SimpleStringProperty(name);
         this.jobTitle = new SimpleStringProperty(jobTitle);
     }
@@ -36,7 +41,7 @@ public class Teacher {
 
     // Сеттеры
     public void setId(int id) {
-        this.id.set(id);
+        this.id = new SimpleIntegerProperty(id);
     }
 
     public void setName(String name) {
