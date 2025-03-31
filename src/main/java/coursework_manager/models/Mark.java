@@ -1,5 +1,10 @@
 package coursework_manager.models;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+@Data
 public class Mark {
     private int id;
     private String studentName;
@@ -11,27 +16,4 @@ public class Mark {
         this.mark = mark;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
-
-    public void setMark(Integer mark) {
-        this.mark = mark;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getStudentName() {
-        return studentName;
-    }
-
-    public Integer getMark() {
-        return mark;
-    }
 }

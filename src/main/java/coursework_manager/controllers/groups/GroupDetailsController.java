@@ -78,7 +78,7 @@ public class GroupDetailsController {
                 .collect(Collectors.toList());
 
         // Создаем диалог выбора преподавателя
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(selectedRecord.getTeacherName(), teacherNames);
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(selectedRecord.getTeacher().getName(), teacherNames);
         dialog.setTitle("Изменить преподавателя");
         dialog.setHeaderText("Выберите нового преподавателя");
         dialog.setContentText("Преподаватель:");

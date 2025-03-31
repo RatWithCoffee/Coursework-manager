@@ -1,71 +1,22 @@
 package coursework_manager.models;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import lombok.Data;
 
+@Data
 public class Teacher {
-    private  IntegerProperty id;
-    private final StringProperty name;
-    private final StringProperty jobTitle;
+    private int id;
+    private String name;
+    private String jobTitle;
 
-    // Конструктор
     public Teacher(int id, String name, String jobTitle) {
-        this.id = new SimpleIntegerProperty(id);
-        this.name = new SimpleStringProperty(name);
-        this.jobTitle = new SimpleStringProperty(jobTitle);
+        this.id = id;
+        this.name = name;
+        this.jobTitle = jobTitle;
     }
 
     public Teacher(String name, String jobTitle) {
-        this.name = new SimpleStringProperty(name);
-        this.jobTitle = new SimpleStringProperty(jobTitle);
+        this.name = name;
+        this.jobTitle = jobTitle;
     }
 
-    // Геттеры для свойств
-    public int getId() {
-        return id.get();
-    }
-
-    public IntegerProperty idProperty() {
-        return id;
-    }
-
-    public String getName() {
-        return name.get();
-    }
-
-    public StringProperty nameProperty() {
-        return name;
-    }
-
-    // Сеттеры
-    public void setId(int id) {
-        this.id = new SimpleIntegerProperty(id);
-    }
-
-    public void setName(String name) {
-        this.name.set(name);
-    }
-
-    // Переопределение метода toString для удобства отладки
-    @Override
-    public String toString() {
-        return "Teacher{" +
-                "id=" + id.get() +
-                ", name=" + name.get() +
-                '}';
-    }
-
-    public String getJobTitle() {
-        return jobTitle.get();
-    }
-
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle.set(jobTitle);
-    }
-
-    public StringProperty jobTitleProperty() {
-        return jobTitle;
-    }
 }

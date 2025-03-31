@@ -5,6 +5,7 @@ module coursework_manager {
     requires org.controlsfx.controls;
     requires java.sql;
     requires java.desktop;
+    requires static lombok;
 
     exports coursework_manager.controllers;
     exports coursework_manager.models;
