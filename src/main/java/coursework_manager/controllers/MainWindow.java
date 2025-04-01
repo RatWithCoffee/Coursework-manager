@@ -1,7 +1,9 @@
 package coursework_manager.controllers;
 
 import coursework_manager.controllers.groups.GroupListController;
+import coursework_manager.models.User;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -10,16 +12,22 @@ import java.io.IOException;
 public class MainWindow {
 
 
-    public static void showMainWindow(Stage stage) {
+    public static void showMainWindow(Stage stage, User user) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(GroupListController.class.getResource("group_list.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            FXMLLoader loader = new FXMLLoader(GroupListController.class.getResource("group_list.fxml"));
+
+            // Создаем контроллер и устанавливаем пользователя
+            GroupListController controller = new GroupListController();
+            controller.setUser(user);
+            loader.setController(controller);
+
+            Parent root = loader.load();
+
             stage.setTitle("Менеджер курсовых работ");
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

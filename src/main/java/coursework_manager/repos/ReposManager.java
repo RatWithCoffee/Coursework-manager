@@ -1,10 +1,7 @@
 package coursework_manager.repos;
 
 
-import coursework_manager.rmi_interfaces.IGroupRepo;
-import coursework_manager.rmi_interfaces.IMarkRepo;
-import coursework_manager.rmi_interfaces.IRecordRepo;
-import coursework_manager.rmi_interfaces.ITeacherRepo;
+import coursework_manager.rmi_interfaces.*;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -16,6 +13,7 @@ public class ReposManager {
     private static IMarkRepo markRepo;
     private static IRecordRepo recordRepo;
     private static ITeacherRepo teacherRepo;
+    private static ILoginRepo loginRepo;
 
     public static void initializeRegistry() {
         try {
@@ -24,6 +22,7 @@ public class ReposManager {
             markRepo = (IMarkRepo) registry.lookup("MarkRepo");
             recordRepo = (IRecordRepo) registry.lookup("RecordRepo");
             teacherRepo = (ITeacherRepo) registry.lookup("TeacherRepo");
+            loginRepo = (ILoginRepo) registry.lookup("LoginRepo");
         } catch (RemoteException e) {
             throw new RuntimeException("Ошибка подключения к RMI-регистру", e);
         } catch (NotBoundException e) {
@@ -57,6 +56,13 @@ public class ReposManager {
             initializeRegistry();
         }
         return teacherRepo;
+    }
+
+    public static ILoginRepo getLoginRepo() {
+        if (loginRepo == null) {
+            initializeRegistry();
+        }
+        return loginRepo;
     }
 
 }

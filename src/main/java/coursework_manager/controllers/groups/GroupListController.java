@@ -2,11 +2,15 @@ package coursework_manager.controllers.groups;
 
 import coursework_manager.controllers.teachers.TeacherListController;
 import coursework_manager.models.Group;
+import coursework_manager.models.Role;
+import coursework_manager.models.User;
 import coursework_manager.repos.ReposManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
@@ -19,10 +23,37 @@ public class GroupListController {
     @FXML
     private ListView<Group> groupListView;
 
+    @FXML
+    private Label userInfoLabel;
+
     private List<Group> groups;
 
     @FXML
+    private Button teachersButton;
+    private User user;
+
+    // Добавляем конструктор по умолчанию
+    public GroupListController() {
+    }
+
+    // Метод для установки пользователя
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @FXML
     public void initialize() throws RemoteException {
+        // Проверяем, что пользователь установлен
+        if (user == null) {
+            throw new IllegalStateException("User must be set before initialization");
+        }
+
+        if (user.getRole() == Role.TEACHER) {
+            teachersButton.setVisible(false);
+        }
+
+        setUserInfo();
+
         // Получаем список групп из репозитория
         groups = ReposManager.getGroupRepo().getAllGroups();
 
@@ -37,13 +68,22 @@ public class GroupListController {
         });
     }
 
+    private void setUserInfo() {
+        String roleName = user.getRole() == null ? "Не определена" :
+                user.getRole().equals(Role.ADMIN) ? "Администратор" : "Преподаватель";
+        userInfoLabel.setText(String.format("Пользователь: %s (%s)", user.getLogin(), roleName));
+    }
+
     private void openGroupDetailsWindow(Group group) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("group_details.fxml"));
             Parent root = loader.load();
 
+            // Получаем контроллер после вызова load()
             GroupDetailsController controller = loader.getController();
-            controller.setGroup(group);
+
+            // Устанавливаем группу и пользователя
+            controller.init(user, group);
 
             Stage stage = new Stage();
             stage.setTitle("Информация о группе: " + group.getName());
@@ -54,18 +94,16 @@ public class GroupListController {
         }
     }
 
-
     @FXML
     private void handleGoToTeachers() {
         try {
-            // Загрузка FXML-файла для списка учителей
             FXMLLoader loader = new FXMLLoader(TeacherListController.class.getResource("list_teachers.fxml"));
+            TeacherListController controller = new TeacherListController();
+            loader.setController(controller);
+
             Parent root = loader.load();
 
-            // Получение текущего Stage
             Stage stage = (Stage) groupListView.getScene().getWindow();
-
-            // Установка новой сцены
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Управление преподавателями");

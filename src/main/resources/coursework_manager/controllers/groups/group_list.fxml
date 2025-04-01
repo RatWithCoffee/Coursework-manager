@@ -7,21 +7,22 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="coursework_manager.controllers.groups.GroupListController"
-      prefWidth="400">
-    <!-- Указываем spacing и padding в правильном формате -->
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" >
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
     <spacing>10</spacing>
+
+    <!-- Блок с информацией о пользователе -->
+    <HBox style="-fx-background-color: #e0e0e0; -fx-padding: 5;">
+        <Label fx:id="userInfoLabel" style="-fx-font-weight: bold;"/>
+    </HBox>
 
     <Label text="Список групп" style="-fx-font-size: 18; -fx-font-weight: bold;" />
 
     <ListView fx:id="groupListView" prefHeight="200" prefWidth="380" />
 
     <HBox>
-        <Button text="К списку преподавателей" onAction="#handleGoToTeachers"
-                prefWidth="200" />
+        <Button fx:id="teachersButton" text="К списку преподавателей" prefWidth="200" />
     </HBox>
 </VBox>

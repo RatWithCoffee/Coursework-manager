@@ -1,8 +1,6 @@
 package coursework_manager.controllers.groups;
 
-import coursework_manager.models.CourseworkRecord;
-import coursework_manager.models.Group;
-import coursework_manager.models.Teacher;
+import coursework_manager.models.*;
 import coursework_manager.repos.ReposManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,10 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
@@ -23,21 +18,43 @@ import java.util.stream.Collectors;
 
 public class GroupDetailsController {
 
+    public Button changeTeacherButton;
     @FXML
     private TableView<CourseworkRecord> courseworkTable;
 
     private Group group;
 
+    private User user;
+
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void init(User user, Group group) {
+        setUser(user);
+        setGroup(group);
         loadCourseworkRecords();
     }
 
+
     private void loadCourseworkRecords() {
+        if (user.getRole() == Role.TEACHER) {
+            changeTeacherButton.setVisible(false);
+        }
         // Получаем данные из базы данных через репозитории
         List<CourseworkRecord> records = null;
         try {
-            records = ReposManager.getRecordRepo().getAllByGroup(group.getId());
+            if (user.getRole() == Role.TEACHER) {
+                records = ReposManager.getRecordRepo().getAllByGroupAndTeacher(group.getId(), user.getId());
+                System.out.println(records.size());
+            } else {
+                records = ReposManager.getRecordRepo().getAllByGroup(group.getId());
+            }
+
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
