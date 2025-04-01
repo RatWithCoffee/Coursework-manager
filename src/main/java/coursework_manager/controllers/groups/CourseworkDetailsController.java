@@ -2,7 +2,7 @@ package coursework_manager.controllers.groups;
 
 import coursework_manager.models.CourseworkRecord;
 import coursework_manager.models.Mark;
-import coursework_manager.repos.MarkRepo;
+import coursework_manager.repos.ReposManager;
 import coursework_manager.utils.AlertUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +13,7 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +38,12 @@ public class CourseworkDetailsController {
 
     private void loadMarks() {
         // Получаем данные из базы данных через репозитории
-        List<Mark> marks = MarkRepo.getMarksByCourseworkRecordId(courseworkRecord.getCoursework().getId(), courseworkRecord.getGroup().getId());
+        List<Mark> marks = null;
+        try {
+            marks = ReposManager.getMarkRepo().getMarksByCourseworkRecordId(courseworkRecord.getCoursework().getId(), courseworkRecord.getGroup().getId());
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
 
         // Заполняем таблицу данными
         ObservableList<Mark> data = FXCollections.observableArrayList(marks);
@@ -92,6 +98,10 @@ public class CourseworkDetailsController {
     }
 
     private void updateMarkInDatabase(Mark mark) {
-        MarkRepo.updateMark(mark);
+        try {
+            ReposManager.getMarkRepo().updateMark(mark);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

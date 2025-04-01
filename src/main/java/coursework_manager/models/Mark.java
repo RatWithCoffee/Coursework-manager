@@ -4,8 +4,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Data
-public class Mark {
+public class Mark implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private int id;
     private String studentName;
     private Integer mark;

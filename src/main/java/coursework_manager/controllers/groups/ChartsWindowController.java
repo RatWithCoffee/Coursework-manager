@@ -2,7 +2,7 @@ package coursework_manager.controllers.groups;
 
 import coursework_manager.models.CourseworkRecord;
 import coursework_manager.models.Mark;
-import coursework_manager.repos.MarkRepo;
+import coursework_manager.repos.ReposManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,13 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ public class ChartsWindowController {
     private Stage stage;
     private CourseworkRecord record;
 
-    public void setCourseworkRecord(CourseworkRecord record) {
+    public void setCourseworkRecord(CourseworkRecord record) throws RemoteException {
         this.record = record;
         updateCharts();
     }
@@ -41,12 +40,12 @@ public class ChartsWindowController {
         this.stage = stage;
     }
 
-    private void updateCharts() {
+    private void updateCharts() throws RemoteException {
         titleLabel.setText("Группа: " + record.getGroup().getName() +
                 ", Курсовая: " + record.getCoursework().getName());
 
         // Получаем оценки студентов по этой курсовой работе
-        List<Mark> marks = MarkRepo.getMarksByCourseworkRecordId(
+        List<Mark> marks = ReposManager.getMarkRepo().getMarksByCourseworkRecordId(
                 record.getCoursework().getId(),
                 record.getGroup().getId()
         );

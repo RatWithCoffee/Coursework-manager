@@ -2,7 +2,7 @@ package coursework_manager.controllers.teachers;
 
 import coursework_manager.controllers.groups.GroupListController;
 import coursework_manager.models.Teacher;
-import coursework_manager.repos.TeacherRepo;
+import coursework_manager.repos.ReposManager;
 import coursework_manager.utils.AlertUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +38,9 @@ public class TeacherListController {
     private ObservableList<Teacher> teacherList;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws RemoteException {
         // Инициализация таблицы данными из базы
-        teacherList = FXCollections.observableArrayList(TeacherRepo.getAllTeachers());
+        teacherList = FXCollections.observableArrayList(ReposManager.getTeacherRepo().getAllTeachers());
         teacherTable.setItems(teacherList);
     }
 
@@ -86,10 +87,14 @@ public class TeacherListController {
 
             if (name != null && !name.trim().isEmpty()) {
                 Teacher newTeacher = new Teacher(0, name, jobTitle);
-                if (TeacherRepo.addTeacher(newTeacher)) {
-                    teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
-                } else {
-                    AlertUtils.showAlert("Ошибка", "Не удалось добавить преподавателя.");
+                try {
+                    if (ReposManager.getTeacherRepo().addTeacher(newTeacher)) {
+                        teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers()); // Обновляем список
+                    } else {
+                        AlertUtils.showAlert("Ошибка", "Не удалось добавить преподавателя.");
+                    }
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 AlertUtils.showAlert("Ошибка", "Имя не может быть пустым.");
@@ -145,10 +150,14 @@ public class TeacherListController {
             if (name != null && !name.trim().isEmpty()) {
                 selectedTeacher.setName(name);
                 selectedTeacher.setJobTitle(jobTitle);
-                if (TeacherRepo.updateTeacher(selectedTeacher)) {
-                    teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
-                } else {
-                    AlertUtils.showAlert("Ошибка", "Не удалось обновить данные преподавателя.");
+                try {
+                    if (ReposManager.getTeacherRepo().updateTeacher(selectedTeacher)) {
+                        teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers()); // Обновляем список
+                    } else {
+                        AlertUtils.showAlert("Ошибка", "Не удалось обновить данные преподавателя.");
+                    }
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 AlertUtils.showAlert("Ошибка", "Имя преподавателя не может быть пустым.");
@@ -157,7 +166,7 @@ public class TeacherListController {
     }
 
     @FXML
-    private void handleDeleteTeacher() {
+    private void handleDeleteTeacher() throws RemoteException {
         Teacher selectedTeacher = teacherTable.getSelectionModel().getSelectedItem();
         if (selectedTeacher == null) {
             AlertUtils.showAlert("Ошибка", "Выберите преподавателя для удаления.");
@@ -170,8 +179,8 @@ public class TeacherListController {
         confirmation.setContentText(selectedTeacher.getName());
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
-            if (TeacherRepo.deleteTeacher(selectedTeacher.getId())) {
-                teacherList.setAll(TeacherRepo.getAllTeachers()); // Обновляем список
+            if (ReposManager.getTeacherRepo().deleteTeacher(selectedTeacher.getId())) {
+                teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers()); // Обновляем список
             } else {
                 AlertUtils.showAlert("Ошибка", "Не удалось удалить преподавателя.");
             }
@@ -207,7 +216,7 @@ public class TeacherListController {
                 int successCount = 0;
 
                 for (Teacher teacher : importedTeachers) {
-                    if (TeacherRepo.addTeacher(teacher)) {
+                    if (ReposManager.getTeacherRepo().addTeacher(teacher)) {
                         successCount++;
                         teacherList.add(teacher);
                     }

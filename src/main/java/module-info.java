@@ -6,6 +6,7 @@ module coursework_manager {
     requires java.sql;
     requires java.desktop;
     requires static lombok;
+    requires java.rmi;
 
     exports coursework_manager.controllers;
     exports coursework_manager.models;
@@ -15,4 +16,6 @@ module coursework_manager {
     exports coursework_manager.controllers.groups;
     opens coursework_manager.controllers.groups to javafx.fxml;
     exports coursework_manager.controllers.teachers;
+    exports coursework_manager;
+    opens coursework_manager to javafx.fxml;
 }

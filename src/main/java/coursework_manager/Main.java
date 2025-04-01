@@ -1,5 +1,6 @@
-package coursework_manager.controllers;
+package coursework_manager;
 
+import coursework_manager.controllers.MainWindow;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

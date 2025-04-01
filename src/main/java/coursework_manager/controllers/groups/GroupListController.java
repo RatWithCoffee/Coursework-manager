@@ -2,7 +2,7 @@ package coursework_manager.controllers.groups;
 
 import coursework_manager.controllers.teachers.TeacherListController;
 import coursework_manager.models.Group;
-import coursework_manager.repos.GroupRepo;
+import coursework_manager.repos.ReposManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class GroupListController {
@@ -21,9 +22,9 @@ public class GroupListController {
     private List<Group> groups;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws RemoteException {
         // Получаем список групп из репозитория
-        groups = GroupRepo.getAllGroups();
+        groups = ReposManager.getGroupRepo().getAllGroups();
 
         // Отображаем группы в ListView
         groupListView.getItems().addAll(groups);
