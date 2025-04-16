@@ -19,3 +19,5 @@ public class Main extends Application {
         launch();
     }
 }
+
+// --module-path /openjfx-23.0.2_linux-x64_bin-sdk/javafx-sdk-23.0.2/lib/ --add-modules javafx.controls,javafx.fxml
