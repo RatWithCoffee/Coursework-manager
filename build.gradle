@@ -20,7 +20,7 @@ java {
 
 application {
     mainModule = 'coursework_manager'
-    mainClass = 'coursework_manager.controllers.Main'
+    mainClass = 'coursework_manager.Main'
 }
 
 javafx {
@@ -34,7 +34,7 @@ dependencies {
     implementation('org.controlsfx:controlsfx:11.2.0') {
         exclude group: 'org.openjfx'
     }
-    implementation('org.postgresql:postgresql:42.6.0')
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
@@ -57,7 +57,7 @@ jlink {
         jvmArgs = [
                 '-Dfile.encoding=UTF-8',
                 '-Xmx512m',
-                '--add-reads', 'coursework_manager=ALL-UNNAMED'
+                '--add-reads', 'coursework_manager=ALL-UNNAMED',
         ]
     }
 
@@ -76,9 +76,16 @@ jlink {
             installerOptions = [
                     '--description', 'Coursework Management System',
                     '--copyright', 'Copyright 2024',
-                    '--vendor', 'Your Organization',
                     '--win-menu',
                     '--win-shortcut'
+            ]
+        } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
+            installerType = 'rpm'  // For Fedora/RHEL/CentOS
+            // installerType = 'deb'  // For Debian/Ubuntu
+            installerOptions = [
+                    '--description', 'Coursework Management System',
+                    '--copyright', 'Copyright 2024',
+                    '--linux-shortcut'  // Adds a desktop shortcut
             ]
         }
         installerOptions += ['--app-version', version]

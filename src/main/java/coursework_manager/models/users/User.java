@@ -1,4 +1,4 @@
-package coursework_manager.models;
+package coursework_manager.models.users;
 
 import lombok.Data;
 
@@ -6,17 +6,25 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-public class User  implements Serializable {
+public  class User  implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private int id;
     private String login;
     private String password;
     private Role role;
 
+    private int userId;
+
+    public User() {
+    }
+
     public User(String login, String password) {
-        this.id = id;
         this.login = login;
         this.password = password;
     }
+
+    public boolean isAdmin() {
+        return role == Role.ADMIN;
+    }
+
 }

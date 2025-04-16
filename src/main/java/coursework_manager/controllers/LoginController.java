@@ -1,8 +1,9 @@
 package coursework_manager.controllers;
 
 import coursework_manager.controllers.groups.GroupListController;
-import coursework_manager.models.User;
+import coursework_manager.models.users.User;
 import coursework_manager.repos.ReposManager;
+import coursework_manager.storage.UserStorage;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -41,7 +42,6 @@ public class LoginController {
 
     @FXML
     private void initialize() {
-        // Инициализация контроллера
         loginButton.setOnAction(event -> handleLogin());
         errorLabel.setText("");
     }
@@ -71,12 +71,14 @@ public class LoginController {
         try {
             User user = new User(username, password);
            User loginUser = ReposManager.getLoginRepo().login(user);
+
             if (loginUser != null) {
-                errorLabel.setText(""); // Очищаем сообщение об ошибке при успешном входе
-                MainWindow.showMainWindow(stage, loginUser);
+                System.out.println(loginUser.getRole());
+                errorLabel.setText("");
+                UserStorage.setUser(loginUser);
+                MainWindow.showMainWindow(stage);
             } else {
                 errorLabel.setText("Неверный логин или пароль");
-                // Можно добавить очистку поля пароля для безопасности
                 passwordField.clear();
             }
         } catch (RemoteException e) {

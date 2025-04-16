@@ -1,7 +1,7 @@
 package coursework_manager.controllers.teachers;
 
 import coursework_manager.controllers.groups.GroupListController;
-import coursework_manager.models.Teacher;
+import coursework_manager.models.users.Teacher;
 import coursework_manager.repos.ReposManager;
 import coursework_manager.utils.AlertUtils;
 import javafx.collections.FXCollections;
@@ -10,17 +10,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +23,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TeacherListController {
 
@@ -46,8 +41,8 @@ public class TeacherListController {
 
     @FXML
     private void handleAddTeacher() {
-        // Создаем диалоговое окно
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        // Создаем диалоговое окно с расширенной формой
+        Dialog<Teacher> dialog = new Dialog<>();
         dialog.setTitle("Добавить нового преподавателя");
         dialog.setHeaderText("Введите данные преподавателя");
 
@@ -64,40 +59,54 @@ public class TeacherListController {
         nameField.setPromptText("Имя");
         TextField jobTitleField = new TextField();
         jobTitleField.setPromptText("Должность");
+        TextField loginField = new TextField();
+        loginField.setPromptText("Логин");
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Пароль");
 
         grid.add(new Label("Имя:"), 0, 0);
         grid.add(nameField, 1, 0);
         grid.add(new Label("Должность:"), 0, 1);
         grid.add(jobTitleField, 1, 1);
+        grid.add(new Label("Логин:"), 0, 2);
+        grid.add(loginField, 1, 2);
+        grid.add(new Label("Пароль:"), 0, 3);
+        grid.add(passwordField, 1, 3);
 
         dialog.getDialogPane().setContent(grid);
 
-        // Преобразуем результат в пару значений
+        // Преобразуем результат в объект Teacher
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                return new Pair<>(nameField.getText(), jobTitleField.getText());
+                return new Teacher(
+                        0,
+                        nameField.getText(),
+                        jobTitleField.getText(),
+                        loginField.getText(),
+                        passwordField.getText()
+                );
             }
             return null;
         });
 
         // Показываем диалог и обрабатываем результат
-        dialog.showAndWait().ifPresent(result -> {
-            String name = result.getKey();
-            String jobTitle = result.getValue();
+        Optional<Teacher> result = dialog.showAndWait();
+        result.ifPresent(teacher -> {
+            if (teacher.getName() != null && !teacher.getName().trim().isEmpty() &&
+                    teacher.getLogin() != null && !teacher.getLogin().trim().isEmpty() &&
+                    teacher.getPassword() != null && !teacher.getPassword().trim().isEmpty()) {
 
-            if (name != null && !name.trim().isEmpty()) {
-                Teacher newTeacher = new Teacher(0, name, jobTitle);
                 try {
-                    if (ReposManager.getTeacherRepo().addTeacher(newTeacher)) {
-                        teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers()); // Обновляем список
+                    if (ReposManager.getTeacherRepo().addTeacher(teacher)) {
+                        teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers());
                     } else {
-                        AlertUtils.showAlert("Ошибка", "Не удалось добавить преподавателя.");
+                        AlertUtils.showAlert("Ошибка", "Не удалось добавить преподавателя. Возможно, логин уже занят.");
                     }
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
             } else {
-                AlertUtils.showAlert("Ошибка", "Имя не может быть пустым.");
+                AlertUtils.showAlert("Ошибка", "Все поля обязательны для заполнения.");
             }
         });
     }
@@ -111,7 +120,7 @@ public class TeacherListController {
         }
 
         // Создаем диалоговое окно
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Dialog<Teacher> dialog = new Dialog<>();
         dialog.setTitle("Редактировать преподавателя");
         dialog.setHeaderText("Измените данные преподавателя");
 
@@ -126,33 +135,45 @@ public class TeacherListController {
 
         TextField nameField = new TextField(selectedTeacher.getName());
         TextField jobTitleField = new TextField(selectedTeacher.getJobTitle());
+        TextField loginField = new TextField(selectedTeacher.getLogin());
+        TextField passwordField = new TextField();
+        passwordField.setPromptText("Новый пароль (оставьте пустым, чтобы не менять)");
 
         grid.add(new Label("Имя:"), 0, 0);
         grid.add(nameField, 1, 0);
         grid.add(new Label("Должность:"), 0, 1);
         grid.add(jobTitleField, 1, 1);
+        grid.add(new Label("Логин:"), 0, 2);
+        grid.add(loginField, 1, 2);
+        grid.add(new Label("Пароль:"), 0, 3);
+        grid.add(passwordField, 1, 3);
 
         dialog.getDialogPane().setContent(grid);
 
         // Преобразуем результат
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                return new Pair<>(nameField.getText(), jobTitleField.getText());
+                Teacher updatedTeacher = new Teacher(
+                        selectedTeacher.getUserId(),
+                        nameField.getText(),
+                        jobTitleField.getText(),
+                        loginField.getText(),
+                        passwordField.getText().isEmpty() ? selectedTeacher.getPassword() : passwordField.getText()
+                );
+                updatedTeacher.setUserId(selectedTeacher.getUserId());
+                return updatedTeacher;
             }
             return null;
         });
 
         // Показываем диалог и обрабатываем результат
-        dialog.showAndWait().ifPresent(result -> {
-            String name = result.getKey();
-            String jobTitle = result.getValue();
+        dialog.showAndWait().ifPresent(updatedTeacher -> {
+            if (updatedTeacher.getName() != null && !updatedTeacher.getName().trim().isEmpty() &&
+                    updatedTeacher.getLogin() != null && !updatedTeacher.getLogin().trim().isEmpty()) {
 
-            if (name != null && !name.trim().isEmpty()) {
-                selectedTeacher.setName(name);
-                selectedTeacher.setJobTitle(jobTitle);
                 try {
-                    if (ReposManager.getTeacherRepo().updateTeacher(selectedTeacher)) {
-                        teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers()); // Обновляем список
+                    if (ReposManager.getTeacherRepo().updateTeacher(updatedTeacher)) {
+                        teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers());
                     } else {
                         AlertUtils.showAlert("Ошибка", "Не удалось обновить данные преподавателя.");
                     }
@@ -160,7 +181,7 @@ public class TeacherListController {
                     throw new RuntimeException(e);
                 }
             } else {
-                AlertUtils.showAlert("Ошибка", "Имя преподавателя не может быть пустым.");
+                AlertUtils.showAlert("Ошибка", "Имя и логин не могут быть пустыми.");
             }
         });
     }
@@ -179,23 +200,21 @@ public class TeacherListController {
         confirmation.setContentText(selectedTeacher.getName());
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
-            if (ReposManager.getTeacherRepo().deleteTeacher(selectedTeacher.getId())) {
-                teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers()); // Обновляем список
+            if (ReposManager.getTeacherRepo().deleteTeacher(selectedTeacher.getUserId())) {
+                teacherList.setAll(ReposManager.getTeacherRepo().getAllTeachers());
             } else {
                 AlertUtils.showAlert("Ошибка", "Не удалось удалить преподавателя.");
             }
         }
     }
 
+    // Остальные методы остаются без изменений
     @FXML
     private void handleBack() throws IOException {
         FXMLLoader loader = new FXMLLoader(GroupListController.class.getResource("group_list.fxml"));
         Parent root = loader.load();
 
-        // Получение текущего Stage
         Stage stage = (Stage) teacherTable.getScene().getWindow();
-
-        // Установка новой сцены
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
@@ -216,12 +235,12 @@ public class TeacherListController {
                 int successCount = 0;
 
                 for (Teacher teacher : importedTeachers) {
+                    System.out.println(teacher);
                     if (ReposManager.getTeacherRepo().addTeacher(teacher)) {
                         successCount++;
                         teacherList.add(teacher);
                     }
                 }
-
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Импорт завершен");
@@ -243,16 +262,16 @@ public class TeacherListController {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (values.length >= 2) {
+                if (values.length >= 4) {
                     String name = values[0].trim();
                     String jobTitle = values[1].trim();
-                    teachers.add(new Teacher(name, jobTitle));
+                    String login = values[2].trim();
+                    String password = values[3].trim();
+                    teachers.add(new Teacher(name, jobTitle, login, password));
                 }
             }
         }
 
         return teachers;
     }
-
-
 }

@@ -1,10 +1,15 @@
 package coursework_manager.controllers.groups;
 
+import coursework_manager.controllers.LoginController;
+import coursework_manager.controllers.MainWindow;
 import coursework_manager.controllers.teachers.TeacherListController;
 import coursework_manager.models.Group;
-import coursework_manager.models.Role;
-import coursework_manager.models.User;
+import coursework_manager.models.users.Role;
+import coursework_manager.models.users.Teacher;
+import coursework_manager.models.users.User;
 import coursework_manager.repos.ReposManager;
+import coursework_manager.storage.UserStorage;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -32,17 +38,11 @@ public class GroupListController {
     private Button teachersButton;
     private User user;
 
-    // Добавляем конструктор по умолчанию
-    public GroupListController() {
-    }
-
-    // Метод для установки пользователя
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     @FXML
     public void initialize() throws RemoteException {
+        user = UserStorage.getUser();
+
         // Проверяем, что пользователь установлен
         if (user == null) {
             throw new IllegalStateException("User must be set before initialization");
@@ -70,8 +70,14 @@ public class GroupListController {
 
     private void setUserInfo() {
         String roleName = user.getRole() == null ? "Не определена" :
-                user.getRole().equals(Role.ADMIN) ? "Администратор" : "Преподаватель";
-        userInfoLabel.setText(String.format("Пользователь: %s (%s)", user.getLogin(), roleName));
+                user.isAdmin() ? "Администратор" : "Преподаватель";
+        if (user.isAdmin()) {
+            userInfoLabel.setText(String.format("Пользователь: %s (%s)", user.getLogin(), roleName));
+        } else {
+            Teacher teacher = (Teacher) user;
+            userInfoLabel.setText(String.format("Преподаватель: %s", teacher.getName()));
+
+        }
     }
 
     private void openGroupDetailsWindow(Group group) {
@@ -83,7 +89,7 @@ public class GroupListController {
             GroupDetailsController controller = loader.getController();
 
             // Устанавливаем группу и пользователя
-            controller.init(user, group);
+            controller.init(group);
 
             Stage stage = new Stage();
             stage.setTitle("Информация о группе: " + group.getName());
@@ -98,9 +104,6 @@ public class GroupListController {
     private void handleGoToTeachers() {
         try {
             FXMLLoader loader = new FXMLLoader(TeacherListController.class.getResource("list_teachers.fxml"));
-            TeacherListController controller = new TeacherListController();
-            loader.setController(controller);
-
             Parent root = loader.load();
 
             Stage stage = (Stage) groupListView.getScene().getWindow();
@@ -111,5 +114,19 @@ public class GroupListController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void handleExit(ActionEvent actionEvent) {
+        UserStorage.deleteUser();
+
+        // Получаем текущую Stage из любого компонента (например, из groupListView)
+        Stage currentStage = (Stage) groupListView.getScene().getWindow();
+
+        // Закрываем текущее окно
+        currentStage.close();
+
+        // Создаём и показываем окно логина
+        LoginController loginController = new LoginController(currentStage);
+        loginController.showLoginPage();
     }
 }

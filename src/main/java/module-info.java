@@ -3,10 +3,10 @@ module coursework_manager {
     requires javafx.fxml;
 
     requires org.controlsfx.controls;
-    requires java.sql;
-    requires java.desktop;
     requires static lombok;
     requires java.rmi;
+    requires com.fasterxml.jackson.databind;
+    requires java.net.http;
 
     exports coursework_manager.controllers;
     exports coursework_manager.models;

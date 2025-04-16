@@ -10,6 +10,8 @@
     <top>
         <ToolBar>
             <Button fx:id="changeTeacherButton"  text="Изменить преподавателя" onAction="#changeTeacher" />
+            <Button onAction="#handleAddCw" fx:id="handleAddCw"   text="Добавить курсовые работы" prefWidth="200" />
+
         </ToolBar>
     </top>
     <center>
